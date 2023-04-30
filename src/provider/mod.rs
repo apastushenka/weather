@@ -1,3 +1,5 @@
+use thiserror::Error;
+
 pub mod dummy;
 
 #[derive(Debug)]
@@ -26,11 +28,17 @@ impl std::fmt::Display for WeatherReport {
     }
 }
 
+#[derive(Debug, Error)]
+pub enum Error {
+    #[error("authentication error")]
+    AuthError,
+    #[error("external API error: {0}")]
+    ApiError(String),
+    #[error(transparent)]
+    Other(#[from] Box<dyn std::error::Error>),
+}
+
 pub trait WeatherProvider {
     /// Returns a weather for given location and date
-    fn get_weather(
-        &self,
-        location: &str,
-        date: time::Date,
-    ) -> Result<WeatherReport, Box<dyn std::error::Error>>;
+    fn get_weather(&self, location: &str, date: time::Date) -> Result<WeatherReport, Error>;
 }
