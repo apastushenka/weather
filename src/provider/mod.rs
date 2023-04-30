@@ -1,6 +1,7 @@
 use thiserror::Error;
 
 pub mod dummy;
+pub mod visualcrossing;
 
 #[derive(Debug)]
 pub enum Temperature {
