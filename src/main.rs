@@ -3,6 +3,7 @@ use clap::Parser;
 use once_cell::sync::Lazy;
 use provider::{DummyProvider, VisualCrossingProvider, WeatherProvider};
 use std::{collections::BTreeMap, fs::File, path::PathBuf};
+use time::OffsetDateTime;
 
 mod cli;
 mod config;
@@ -49,6 +50,12 @@ fn save(provider: Box<dyn WeatherProvider>) -> Result<()> {
     Ok(())
 }
 
+fn load() -> Option<Box<dyn WeatherProvider>> {
+    let path = config_path().ok()?;
+    let file = File::open(path).ok()?;
+    config::load(&file)
+}
+
 fn main() -> Result<()> {
     let cli = cli::Cli::parse();
 
@@ -68,7 +75,23 @@ fn main() -> Result<()> {
                 bail!("no such provider: {}", name);
             }
         }
-        _ => {}
+
+        cli::Commands::Get { address, date } => {
+            let date = date.unwrap_or_else(|| OffsetDateTime::now_local().unwrap().date());
+
+            if let Some(provider) = load() {
+                let report = provider
+                    .get_weather(&address, date)
+                    .context("Failed to get weather")?;
+
+                println!(
+                    "Weather for {}: {} {}",
+                    address, report.temperature, report.condition
+                );
+            } else {
+                bail!("configure provider first");
+            }
+        }
     }
 
     Ok(())
