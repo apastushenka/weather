@@ -5,11 +5,11 @@ use time::{macros::format_description, Date};
 #[command(version)]
 pub struct Cli {
     #[command(subcommand)]
-    command: Commands,
+    pub command: Commands,
 }
 
 #[derive(Subcommand)]
-enum Commands {
+pub enum Commands {
     /// List available providers
     Providers,
 

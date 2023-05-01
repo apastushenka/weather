@@ -1879,6 +1879,7 @@ dependencies = [
  "assert_matches",
  "clap",
  "httpmock",
+ "once_cell",
  "serde",
  "serde_json",
  "thiserror",
