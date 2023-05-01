@@ -3,6 +3,9 @@ use thiserror::Error;
 pub mod dummy;
 pub mod visualcrossing;
 
+pub use dummy::DummyProvider;
+pub use visualcrossing::VisualCrossingProvider;
+
 #[derive(Debug)]
 pub enum Temperature {
     /// The temperature in Celsius
