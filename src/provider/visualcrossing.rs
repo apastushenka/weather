@@ -1,4 +1,4 @@
-//! [Visual Crossing](https://www.visualcrossing.com) weather provider
+//! [Visual Crossing](https://www.visualcrossing.com) weather provider.
 
 use super::{Error, Temperature, WeatherProvider, WeatherReport};
 use serde::{Deserialize, Serialize};

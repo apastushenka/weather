@@ -1,4 +1,4 @@
-//! Just a dummy weather provider
+//! Just a dummy weather provider.
 
 use super::{Error, Temperature, WeatherProvider, WeatherReport};
 use serde::{Deserialize, Serialize};

@@ -8,7 +8,7 @@ pub use visualcrossing::VisualCrossingProvider;
 
 #[derive(Debug)]
 pub enum Temperature {
-    /// The temperature in Celsius
+    /// The temperature in Celsius.
     C(f32),
 }
 
@@ -20,6 +20,7 @@ impl std::fmt::Display for Temperature {
     }
 }
 
+/// Weather report from provider.
 #[derive(Debug)]
 pub struct WeatherReport {
     pub temperature: Temperature,
@@ -42,18 +43,22 @@ pub enum Error {
     Other(#[from] Box<dyn std::error::Error + Send + Sync>),
 }
 
+/// A trait for weather providers.
+///
+/// Every provider must also implement Serialization/Deserialization
+/// using [typetag](https://docs.rs/typetag).
 #[typetag::serde(tag = "type")]
 pub trait WeatherProvider {
-    /// Short name of provider
+    /// Short name of provider.
     fn name() -> &'static str
     where
         Self: Sized;
 
-    /// Description of provider
+    /// Description of provider.
     fn description() -> &'static str
     where
         Self: Sized;
 
-    /// Returns a weather for given location and date
+    /// Returns a weather for given location and date.
     fn get_weather(&self, location: &str, date: time::Date) -> Result<WeatherReport, Error>;
 }
