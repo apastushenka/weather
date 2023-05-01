@@ -3,7 +3,7 @@ use anyhow::{Context, Result};
 use std::io::{Read, Write};
 
 pub fn save<W: Write>(writer: W, provider: Box<dyn WeatherProvider>) -> Result<()> {
-    serde_json::to_writer(writer, &provider).context("Failed to save provider")?;
+    serde_json::to_writer(writer, &provider)?;
     Ok(())
 }
 
