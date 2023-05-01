@@ -42,6 +42,7 @@ pub enum Error {
     Other(#[from] Box<dyn std::error::Error>),
 }
 
+#[typetag::serde(tag = "type")]
 pub trait WeatherProvider {
     /// Returns a weather for given location and date
     fn get_weather(&self, location: &str, date: time::Date) -> Result<WeatherReport, Error>;

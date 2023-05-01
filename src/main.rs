@@ -1,5 +1,6 @@
 use provider::{dummy::DummyProvider, WeatherProvider};
 
+mod config;
 mod provider;
 
 fn main() {

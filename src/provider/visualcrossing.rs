@@ -1,12 +1,13 @@
 //! [Visual Crossing](https://www.visualcrossing.com) weather provider
 
 use super::{Error, Temperature, WeatherProvider, WeatherReport};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use time::macros::format_description;
 
 const BASE_URL: &str =
     "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline";
 
+#[derive(Serialize, Deserialize)]
 pub struct VisualCrossingProvider {
     base_url: String,
     key: String,
@@ -21,6 +22,7 @@ impl VisualCrossingProvider {
     }
 }
 
+#[typetag::serde]
 impl WeatherProvider for VisualCrossingProvider {
     fn get_weather(&self, location: &str, date: time::Date) -> Result<WeatherReport, Error> {
         let date = date
