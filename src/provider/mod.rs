@@ -39,7 +39,7 @@ pub enum Error {
     #[error("external API error: {0}")]
     ApiError(String),
     #[error(transparent)]
-    Other(#[from] Box<dyn std::error::Error>),
+    Other(#[from] Box<dyn std::error::Error + Send + Sync>),
 }
 
 #[typetag::serde(tag = "type")]

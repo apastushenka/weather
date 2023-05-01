@@ -33,6 +33,8 @@ impl WeatherProvider for VisualCrossingProvider {
     }
 
     fn get_weather(&self, location: &str, date: time::Date) -> Result<WeatherReport, Error> {
+        type BoxError = Box<dyn std::error::Error + Send + Sync>;
+
         let date = date
             .format(format_description!("[year]-[month]-[day]"))
             .unwrap();
@@ -49,20 +51,18 @@ impl WeatherProvider for VisualCrossingProvider {
             Ok(response) => {
                 let report = response
                     .into_json::<VisualCrossingReport>()
-                    .map_err(Box::<dyn std::error::Error>::from)?
+                    .map_err(BoxError::from)?
                     .try_into()?;
 
                 Ok(report)
             }
             Err(ureq::Error::Status(400, response)) => {
-                let message = response
-                    .into_string()
-                    .map_err(Box::<dyn std::error::Error>::from)?;
+                let message = response.into_string().map_err(BoxError::from)?;
 
                 Err(Error::ApiError(message))
             }
             Err(ureq::Error::Status(401, _)) => Err(Error::AuthError),
-            Err(e) => Err(Box::<dyn std::error::Error>::from(e).into()),
+            Err(e) => Err(Error::Other(BoxError::from(e))),
         }
     }
 }
