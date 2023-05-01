@@ -1,11 +1,10 @@
+use clap::Parser;
 use provider::{dummy::DummyProvider, WeatherProvider};
 
+mod cli;
 mod config;
 mod provider;
 
 fn main() {
-    let source: Box<dyn WeatherProvider> = Box::new(DummyProvider::new());
-    let report = source.get_weather("", time::Date::MIN).unwrap();
-
-    println!("{}", report);
+    let cli = cli::Cli::parse();
 }

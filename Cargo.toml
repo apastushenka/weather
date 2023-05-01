@@ -7,10 +7,11 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.71"
+clap = { version = "4.2.5", features = ["derive"] }
 serde = { version = "1.0.160", features = ["derive"] }
 serde_json = "1.0.96"
 thiserror = "1.0.40"
-time = { version = "0.3.20", features = ["formatting", "macros"] }
+time = { version = "0.3.20", features = ["formatting", "macros", "parsing"] }
 typetag = "0.2.8"
 ureq = { version = "2.6.2", features = ["json"] }
 
