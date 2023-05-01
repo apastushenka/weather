@@ -44,6 +44,16 @@ pub enum Error {
 
 #[typetag::serde(tag = "type")]
 pub trait WeatherProvider {
+    /// Short name of provider
+    fn name() -> &'static str
+    where
+        Self: Sized;
+
+    /// Description of provider
+    fn description() -> &'static str
+    where
+        Self: Sized;
+
     /// Returns a weather for given location and date
     fn get_weather(&self, location: &str, date: time::Date) -> Result<WeatherReport, Error>;
 }

@@ -14,6 +14,14 @@ impl DummyProvider {
 
 #[typetag::serde]
 impl WeatherProvider for DummyProvider {
+    fn name() -> &'static str {
+        "dummy"
+    }
+
+    fn description() -> &'static str {
+        "Dummy provider"
+    }
+
     fn get_weather(&self, _location: &str, _date: time::Date) -> Result<WeatherReport, Error> {
         Ok(WeatherReport {
             temperature: Temperature::C(20.5),

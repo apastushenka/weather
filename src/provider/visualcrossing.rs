@@ -24,6 +24,14 @@ impl VisualCrossingProvider {
 
 #[typetag::serde]
 impl WeatherProvider for VisualCrossingProvider {
+    fn name() -> &'static str {
+        "vc"
+    }
+
+    fn description() -> &'static str {
+        "Visual Crossing weather provider"
+    }
+
     fn get_weather(&self, location: &str, date: time::Date) -> Result<WeatherReport, Error> {
         let date = date
             .format(format_description!("[year]-[month]-[day]"))
