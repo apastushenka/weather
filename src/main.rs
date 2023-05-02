@@ -36,29 +36,10 @@ static PROVIDERS: Lazy<BTreeMap<&str, (&str, ProviderBuilder)>> = Lazy::new(|| {
     providers
 });
 
-fn config_path() -> std::io::Result<PathBuf> {
-    let mut path = std::env::current_exe()?;
-    path.set_extension("json");
-    Ok(path)
-}
-
-fn save(provider: Box<dyn WeatherProvider>) -> Result<()> {
-    let path = config_path()?;
-    let file = File::create(path)?;
-    config::save(&file, provider)?;
-
-    Ok(())
-}
-
-fn load() -> Option<Box<dyn WeatherProvider>> {
-    let path = config_path().ok()?;
-    let file = File::open(path).ok()?;
-    config::load(&file)
-}
-
 fn main() -> Result<()> {
-    let cli = cli::Cli::parse();
+    let mut config = Lazy::new(|| load_config().unwrap_or_default());
 
+    let cli = cli::Cli::parse();
     match cli.command {
         cli::Commands::Providers => {
             println!("Available providers:");
@@ -69,8 +50,8 @@ fn main() -> Result<()> {
 
         cli::Commands::Configure { provider: name } => {
             if let Some((_, build)) = PROVIDERS.get(name.as_str()) {
-                let provider = build();
-                save(provider).context("Failed to save provider")?;
+                config.add(name, build());
+                save_config(&config).context("Failed to save provider")?;
             } else {
                 bail!("no such provider: {}", name);
             }
@@ -79,7 +60,7 @@ fn main() -> Result<()> {
         cli::Commands::Get { address, date } => {
             let date = date.unwrap_or_else(|| OffsetDateTime::now_local().unwrap().date());
 
-            if let Some(provider) = load() {
+            if let Some(provider) = config.get_default() {
                 let report = provider
                     .get_weather(&address, date)
                     .context("Failed to get weather")?;
@@ -95,4 +76,26 @@ fn main() -> Result<()> {
     }
 
     Ok(())
+}
+
+fn config_path() -> std::io::Result<PathBuf> {
+    let mut path = std::env::current_exe()?;
+    path.set_extension("json");
+    Ok(path)
+}
+
+fn save_config(config: &config::Config) -> Result<()> {
+    let path = config_path()?;
+    let file = File::create(path)?;
+    serde_json::to_writer(&file, config)?;
+
+    Ok(())
+}
+
+fn load_config() -> Result<config::Config> {
+    let path = config_path()?;
+    let file = File::open(path)?;
+    let config = serde_json::from_reader(&file)?;
+
+    Ok(config)
 }
