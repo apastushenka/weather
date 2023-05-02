@@ -29,7 +29,7 @@ impl WeatherProvider for VisualCrossingProvider {
     }
 
     fn description() -> &'static str {
-        "Visual Crossing weather provider"
+        "Visual Crossing weather provider (https://www.visualcrossing.com/)"
     }
 
     fn get_weather(&self, location: &str, date: time::Date) -> Result<WeatherReport, Error> {
