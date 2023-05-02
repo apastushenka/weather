@@ -19,6 +19,12 @@ pub enum Commands {
         provider: String,
     },
 
+    /// Set default provider
+    Default {
+        /// Provider name
+        provider: String,
+    },
+
     /// Get weather
     Get {
         /// Address

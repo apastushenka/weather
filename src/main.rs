@@ -57,6 +57,14 @@ fn main() -> Result<()> {
             }
         }
 
+        cli::Commands::Default { provider: name } => {
+            if config.set_default(name.clone()) {
+                save_config(&config).context("Failed to save provider")?;
+            } else {
+                bail!("no such configured provider: {} ", name);
+            }
+        }
+
         cli::Commands::Get { address, date } => {
             let date = date.unwrap_or_else(|| OffsetDateTime::now_local().unwrap().date());
 
