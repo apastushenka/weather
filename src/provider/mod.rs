@@ -36,9 +36,9 @@ impl std::fmt::Display for WeatherReport {
 #[derive(Debug, Error)]
 pub enum Error {
     #[error("authentication error")]
-    AuthError,
+    Auth,
     #[error("external API error: {0}")]
-    ApiError(String),
+    Api(String),
     #[error(transparent)]
     Other(#[from] Box<dyn std::error::Error + Send + Sync>),
 }

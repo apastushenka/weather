@@ -59,9 +59,9 @@ impl WeatherProvider for VisualCrossingProvider {
             Err(ureq::Error::Status(400, response)) => {
                 let message = response.into_string().map_err(BoxError::from)?;
 
-                Err(Error::ApiError(message))
+                Err(Error::Api(message))
             }
-            Err(ureq::Error::Status(401, _)) => Err(Error::AuthError),
+            Err(ureq::Error::Status(401, _)) => Err(Error::Auth),
             Err(e) => Err(Error::Other(BoxError::from(e))),
         }
     }
@@ -95,7 +95,7 @@ impl TryFrom<VisualCrossingReport> for WeatherReport {
                 condition,
             })
         } else {
-            Err(Error::ApiError("no weather data in response".into()))
+            Err(Error::Api("no weather data in response".into()))
         }
     }
 }
@@ -158,7 +158,7 @@ mod tests {
         let err = provider(&server)
             .get_weather("Minsk", date!(2023 - 05 - 01))
             .unwrap_err();
-        assert_matches!(err, Error::AuthError);
+        assert_matches!(err, Error::Auth);
 
         mock.assert();
     }
@@ -176,7 +176,7 @@ mod tests {
         let err = provider(&server)
             .get_weather("INVALID_LOCATION", date!(2023 - 05 - 01))
             .unwrap_err();
-        assert_matches!(err, Error::ApiError(value) => assert_eq!(value, body));
+        assert_matches!(err, Error::Api(value) => assert_eq!(value, body));
 
         mock.assert();
     }
@@ -194,7 +194,7 @@ mod tests {
         let err = provider(&server)
             .get_weather("Minsk", date!(1900 - 01 - 01))
             .unwrap_err();
-        assert_matches!(err, Error::ApiError(value) => assert_eq!(value, body));
+        assert_matches!(err, Error::Api(value) => assert_eq!(value, body));
 
         mock.assert();
     }

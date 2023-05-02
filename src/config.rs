@@ -20,9 +20,9 @@ impl Config {
     }
 
     /// Returns default provider or `None` if there are no configured providers.
-    pub fn get_default(&self) -> Option<&Box<dyn WeatherProvider>> {
+    pub fn get_default(&self) -> Option<&dyn WeatherProvider> {
         let name = self.default.as_ref()?;
-        self.providers.get(name)
+        self.providers.get(name).map(Box::as_ref)
     }
 
     /// Sets default provider.
